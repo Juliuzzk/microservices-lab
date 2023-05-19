@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"regexp"
-
 	pb "github.com/malarcon-79/microservices-lab/grpc-protos-go/system/custody"
+	"github.com/malarcon-79/microservices-lab/orm-go/dao"
+	"github.com/malarcon-79/microservices-lab/orm-go/model"
+	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
 )
 
@@ -33,8 +35,28 @@ func NewCustodyServiceController() (CustodyServiceController, error) {
 }
 
 func (c *CustodyServiceController) AddCustodyStock(ctx context.Context, msg *pb.CustodyAdd) (*pb.Empty, error) {
+	orm := dao.DB.Model(&model.Custody{})
+
+	// TODO: Validaciones
+
+	// Creamos el modelo de datos para almacenamiento
+	custody := &model.Custody{
+		Period:   msg.Period,
+		ClientId: msg.ClientId,
+		Stock: msg.Stock,
+		Quantity: float64,
+	}
+
+	// Insert
+	if err:= orm.Save(custody).Error; err != nil {
+		c.logger.Error("No se pudo agregar la custodia correctamente", err)
+		return nil, errors.New("error al guardar")
+	}
+
+	msg.Stock = custody.Stock
 	// Implementar este método
-	return nil, errors.New("no implementado")
+	return msg, nil
+	// return nil, errors.New("no implementado")
 }
 
 func (c *CustodyServiceController) ClosePeriod(ctx context.Context, msg *pb.CloseFilters) (*pb.Empty, error) {

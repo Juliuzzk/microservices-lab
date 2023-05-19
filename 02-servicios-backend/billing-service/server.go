@@ -38,6 +38,8 @@ func main() {
 	signal.Notify(stopChannel, syscall.SIGTERM, syscall.SIGINT)
 
 	dsn := os.Getenv("dsn")
+	// dsn := "host=localhost port=5432 user=postgres password=postgres dbname=lab sslmode=disable"
+	// print(dsn)
 	if len(dsn) == 0 {
 		dsn = "host=psql-backend.backend port=5432 user=postgres password=postgres dbname=lab sslmode=disable"
 	}
