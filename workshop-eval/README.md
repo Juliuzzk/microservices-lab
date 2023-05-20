@@ -32,6 +32,7 @@ Luego, iniciar la base de datos y otros requisitos. Para esto, se debe ingresar 
 cd 01-kubernetes
 ./00-create-cluster.sh
 ./01-create-backend.sh
+
 cd ..
 ```
 ---

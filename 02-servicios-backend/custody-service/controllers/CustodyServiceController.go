@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"regexp"
+
 	pb "github.com/malarcon-79/microservices-lab/grpc-protos-go/system/custody"
 	"github.com/malarcon-79/microservices-lab/orm-go/dao"
 	"github.com/malarcon-79/microservices-lab/orm-go/model"
-	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
 )
 
@@ -43,19 +43,19 @@ func (c *CustodyServiceController) AddCustodyStock(ctx context.Context, msg *pb.
 	custody := &model.Custody{
 		Period:   msg.Period,
 		ClientId: msg.ClientId,
-		Stock: msg.Stock,
-		Quantity: float64,
+		Stock:    msg.Stock,
+		Quantity: int32(msg.Quantity),
 	}
 
 	// Insert
-	if err:= orm.Save(custody).Error; err != nil {
+	if err := orm.Save(custody).Error; err != nil {
+		print(err)
 		c.logger.Error("No se pudo agregar la custodia correctamente", err)
 		return nil, errors.New("error al guardar")
 	}
 
-	msg.Stock = custody.Stock
 	// Implementar este método
-	return msg, nil
+	return &pb.Empty{}, nil
 	// return nil, errors.New("no implementado")
 }
 
