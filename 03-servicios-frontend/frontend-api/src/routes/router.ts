@@ -22,6 +22,9 @@ export const setup = (root: string, app: Express) => {
 
     router.post('/custody/add', asyncMiddleware(custodyController.add));
 
+    router.get('/custody/get', asyncMiddleware(custodyController.get));
+
+
     router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
         logger.error(err);
         res.status(500).json(err.message);

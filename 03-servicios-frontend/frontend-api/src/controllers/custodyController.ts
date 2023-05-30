@@ -5,7 +5,7 @@ import * as protoLoader from '@grpc/proto-loader';
 const PROTO_PATH = __dirname + '../../../protos/system/custody/custody.proto';
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
-    keepCase: true,
+	keepCase: true,
 	defaults: true,
 	oneofs: true
 });
@@ -20,27 +20,50 @@ let stub = new service(endpoint, creds);
 
 export const add = async (req: Request, res: Response) => {
 
-    const msg = req.body;
+	const msg = req.body;
 
-    console.log(msg)
-    console.log(stub)
-    const now = Math.floor(Date.now()/1000);
+	console.log(req.body)
 
-    const p = new Promise((resolve, reject) =>
-        stub.AddCustodyStock({
-            period: msg.period,
-            client_id: msg.client_id,
-            stock: msg.stock,
-            quantity: 2
-        }, (err: any, response: any) => {
-            if (err)
-                return reject(err);
-            resolve(response);
-        })
-    );
+	const now = Math.floor(Date.now() / 1000);
 
-    const result = await p;
+	const p = new Promise((resolve, reject) =>
+		stub.AddCustodyStock({
+			period: msg.period,
+			client_id: msg.client_id,
+			stock: msg.stock,
+			quantity: msg.quantity
+		}, (err: any, response: any) => {
+			if (err)
+				return reject(err);
+			resolve(response);
+		})
+	);
 
-    return res.json(result);
+	const result = await p;
+
+	return res.json(result);
+}
+
+export const get = async (req: Request, res: Response) => {
+
+	console.log("GET:")
+	console.log(req.body)
+	const msg = req.body;
+
+	const p = new Promise((resolve, reject) =>
+		stub.GetCustody({
+			period: msg.period,
+			client_id: msg.client_id,
+			stock: msg.stock,
+		}, (err: any, response: any) => {
+			if (err)
+				return reject(err);
+			resolve(response);
+		})
+	);
+
+	const result = await p;
+
+	return res.json(result);
 }
 

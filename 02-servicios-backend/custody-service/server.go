@@ -37,7 +37,7 @@ func main() {
 	stopChannel := make(chan os.Signal, 1)
 	signal.Notify(stopChannel, syscall.SIGTERM, syscall.SIGINT)
 
-	dsn := os.Getenv("dsn")
+	dsn := "host=localhost port=5432 user=postgres password=postgres dbname=lab sslmode=disable"
 	if len(dsn) == 0 {
 		dsn = "host=psql-backend.backend port=5432 user=postgres password=postgres dbname=lab sslmode=disable"
 	}
@@ -45,7 +45,7 @@ func main() {
 	if err := initdb.DAOInit(dsn, "psql"); err != nil {
 		logger.Panic(err)
 	}
-	if err := dao.DB.AutoMigrate(&model.Invoice{}, &model.InvoiceItem{}); err != nil {
+	if err := dao.DB.AutoMigrate(&model.Custody{}); err != nil {
 		logger.Panic("no se pudo migrar tablas", err)
 	}
 
