@@ -6,6 +6,56 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: custody-service
+  namespace: backend
+  labels:
+    tipo: microservicio
+    app: custody-service-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      tipo: microservicio
+      app: custody-service-backend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        tipo: microservicio
+        app: custody-service-backend
+    spec:
+      containers:
+        - name: custody-service
+          image: custody-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: grpc
+              containerPort: 5001
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: custody-service
+  namespace: backend
+  labels:
+    tipo: microservicio
+    app: custody-service-backend
+spec:
+  ports:
+    - name: grpc
+      protocol: TCP
+      port: 5001
+      targetPort: 5001
+  selector:
+    tipo: microservicio
+    app: custody-service-backend
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: billing-service
   namespace: backend
   labels:
