@@ -43,8 +43,6 @@ func (c *CustodyServiceController) AddCustodyStock(ctx context.Context, msg *pb.
 
 
 	//custodys := []*model.Custody{}
-	// TODO: Validaciones
-	print(msg)
 
 	//period: período de la custodia en formato YYYY-MM. Parte de la llave primaria (PK) del registro de custodia. No puede ser nulo
     //stock: nemotécnico del instrumento en custodia. Parte de la llave primaria. No puede ser nulo
@@ -99,8 +97,8 @@ func (c *CustodyServiceController) AddCustodyStock(ctx context.Context, msg *pb.
 		Quantity: int32(msg.Quantity) + int32(custodys.Quantity),
 	}
 
-	// Insert
-	if err := orm.Save(custody).Error; err != nil {
+	// Update
+	if err := orm.Updates(custody).Error; err != nil {
 		print(err)
 		c.logger.Error("No se pudo agregar la custodia correctamente", err)
 		return nil, errors.New("error al guardar")
