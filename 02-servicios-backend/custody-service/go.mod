@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/malarcon-79/microservices-lab/grpc-protos-go v0.0.0-20230412205611-ae5f9e79f825
-	github.com/malarcon-79/microservices-lab/orm-go v0.0.0-20230412205611-ae5f9e79f825
+	github.com/malarcon-79/microservices-lab/orm-go v0.0.0-20230530142152-f4fe52d25ca7
 	go.uber.org/zap v1.24.0
 	google.golang.org/grpc v1.54.0
 )
