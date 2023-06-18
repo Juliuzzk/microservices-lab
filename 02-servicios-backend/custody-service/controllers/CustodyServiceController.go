@@ -41,9 +41,7 @@ func NewCustodyServiceController() (CustodyServiceController, error) {
 func (c *CustodyServiceController) AddCustodyStock(ctx context.Context, msg *pb.CustodyAdd) (*pb.Empty, error) {
 	orm := dao.DB.Model(&model.Custody{})
 
-
-	//custodys := []*model.Custody{}
-
+	//Validaciones..
 	//period: período de la custodia en formato YYYY-MM. Parte de la llave primaria (PK) del registro de custodia. No puede ser nulo
     //stock: nemotécnico del instrumento en custodia. Parte de la llave primaria. No puede ser nulo
 	//client_id: identificador del cliente (RUT). Parte de la llave primaria. No puede ser nulo
@@ -67,6 +65,7 @@ func (c *CustodyServiceController) AddCustodyStock(ctx context.Context, msg *pb.
 		return nil, errors.New("Rut no puede estar en blanco")
 	}
 
+	// Validacon de cantidad
 	if msg.Quantity <= 0 {
 		c.logger.Error("Cantidad no puede ser menor o igual a 0")
 		return nil, errors.New("Cantidad no puede ser menor o igual a 0")
@@ -86,9 +85,6 @@ func (c *CustodyServiceController) AddCustodyStock(ctx context.Context, msg *pb.
 		return nil, status.Errorf(codes.Internal, "No se pudo encontrar la custodia")
 	}
 
-
-	print(custodys.Quantity)
-
 	// Creamos el modelo de datos para almacenamiento
 	custody := &model.Custody{
 		Period:   msg.Period,
@@ -104,9 +100,7 @@ func (c *CustodyServiceController) AddCustodyStock(ctx context.Context, msg *pb.
 		return nil, errors.New("error al guardar")
 	}
 
-	// Implementar este método
 	return &pb.Empty{}, nil
-	// return nil, errors.New("no implementado")
 }
 
 func (c *CustodyServiceController) ClosePeriod(ctx context.Context, msg *pb.CloseFilters) (*pb.Empty, error) {
@@ -127,7 +121,7 @@ func (c *CustodyServiceController) GetCustody(ctx context.Context, msg *pb.Custo
 		Stock:    msg.Stock,
 		ClientId: msg.ClientId,
 	}
-	// Ejecutamos el SELECT con un Inner Join (instrucción Preload) sobre la relación y evaluamos si hubo errores
+	// Find
 	if err := orm.Find(&custodys, filter).Error; err != nil {
 		c.logger.Errorf("no se pudo buscar facturas con filtros %v", filter, err)
 		return nil, status.Errorf(codes.Internal, "no se pudo realizar query")
@@ -135,9 +129,6 @@ func (c *CustodyServiceController) GetCustody(ctx context.Context, msg *pb.Custo
 
 	// Este será el mensaje de salida
 	result := &pb.Custodies{}
-
-	print("Imprimo")
-	print(result.GetItems)
 
 	for _, item := range custodys {
 
@@ -153,5 +144,4 @@ func (c *CustodyServiceController) GetCustody(ctx context.Context, msg *pb.Custo
 
 	// Implementar este método
 	return result, nil
-
 }
